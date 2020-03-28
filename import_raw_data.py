@@ -51,35 +51,6 @@ def query_parameters(service):
     return found, pages
 
 def retrieve_data(service):
-    # API URL for retrieving data
-    #search_url = service_url + service + '?'
-
-    # Initial query to API to retrieve max number of entries
-    #parms = dict()
-    #parms['limit'] = 0
-    
-    # Loop for retrieving total number of entries
-    #for loop in range(2):
-        # Build up of the URL to retrieve
-        #url = search_url + urllib.parse.urlencode(parms)
-        #print('URL:', url)
-        #uh = urllib.request.urlopen(url, context=ctx)
-        #data = uh.read().decode()
-
-        #try:
-        #    js = json.loads(data)
-        #except:
-        #    js = None
-
-        # Retrieve max number of entries
-        #found = js['meta']['found']
-        
-        # Compute number of pages required for the query considering that API results limit is 10000 per page
-        #pages = math.ceil (found / 10000)
-        #print ('Pages:', pages)
-
-        # Set query limit to max number of entries
-    
     # Compute parameters required for the API query
     found, pages = query_parameters(service)
     print('Entries found:', found)
@@ -108,26 +79,10 @@ def retrieve_data(service):
         print('Results:',results)
         loop = loop + 1
 
-        
-
-
-    #parms['limit'] = found
-
-    #if loop == 1:
-        #print('')
-        #if service == 'countries':
-        #    print('************************** Retrieving countries*******************************')
-        #elif service == 'cities':
-        #    print('************************** Retrieving cities**********************************')
-        #elif service == 'locations':
-        #    print('************************** Retrieving locations*******************************')
-        #print('')
-
         # Error control
         errors = 0
 
         if service == 'countries':
-
 
             #Results from the query are inserted into database
             for item in range(results):
@@ -147,11 +102,9 @@ def retrieve_data(service):
                     errors = errors + 1
                     continue
 
-            #  Feedback of errors found
             retrieved = retrieved + results
             
         elif service == 'cities':
-
 
             #Results from the query are inserted into database
             for item in range(results):
@@ -171,34 +124,21 @@ def retrieve_data(service):
                     errors = errors + 1
                     continue
 
-            #  Feedback of errors found
             retrieved = retrieved + results
 
         elif service == 'locations':
-
             
             #Results from the query are inserted into database
             for item in range(results):
                 try:
                     v_id = js['results'][item]['id']
-                    #print(v_id)
                     v_location = js['results'][item]['location']
-                    #print(v_location)
                     v_country = js['results'][item]['country']
-                    #print(v_country)
                     v_city = js['results'][item]['city']
-                    #print(v_city)
                     v_count = js['results'][item]['count']
-                    #print(v_count)
                     v_sourcename = js['results'][item]['sourceName']
-                    #print(v_sourcename)
                     v_firstupdated = js['results'][item]['firstUpdated']
-                    #print(v_firstupdated)
                     v_lastupdated = js['results'][item]['lastUpdated']
-                    #print(v_lastupdated)
-                    
-                    #print(v_id, v_location, v_country, v_city, v_count, v_sourcename, v_firstupdated, v_lastupdated)
-                    
                     
                     try:
                         cur.execute('''INSERT INTO Locations (id, location, country, city, count, sourcename, firstupdated, lastupdated)
@@ -210,17 +150,12 @@ def retrieve_data(service):
                     errors = errors + 1
                     continue
 
-            #  Feedback of errors found
             retrieved = retrieved + results
-
-
 
         # Commit changes in database
         conn.commit()
         
     return retrieved,errors
-
-
 
 # Prepare DB for importing data from the API
 conn = sqlite3.connect('raw_data.sqlite')
